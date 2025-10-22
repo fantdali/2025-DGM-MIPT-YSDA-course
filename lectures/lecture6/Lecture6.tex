@@ -112,7 +112,7 @@
 		\vspace{-0.5cm}
 		\begin{itemize}
 			\item $\gamma(\bx_1, \bx_2)$ -- transportation plan (amount of "dirt" to transport from $\bx_1$ to $\bx_2$).
-			\item $\Gamma(\pi, p)$ -- set of all joint distributions $\gamma (\bx_1, \bx_2)$ with marginals $\pi$ and $p$ ($\int \gamma(\bx_1, \bx_2) d \bx_1 = p(\bx_2)$, $\int \gamma(\bx_1, \bx_2) d \bx_2 = \pd(\bx_1)$).
+			\item $\Gamma(\pi, p)$ -- set of all joint distributions $\gamma (\bx_1, \bx_2)$ with marginals $\pi$ and $p$ ($\int \gamma(\bx_1, \bx_2) d \bx_1 = p(\bx_2)$, $\int \gamma(\bx_1, \bx_2) d \bx_2 = \pi(\bx_1)$).
 			\item $\gamma(\bx_1, \bx_2)$ -- the amount; $\|\bx_1 - \bx_2 \|$ -- the distance.
 		\end{itemize}
 	\end{block}
@@ -284,8 +284,8 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
 	\vspace{-0.2cm}
 	\begin{itemize}
-		\item $\cS_{\pi} = \{\bx_i\}_{i=1}^{n} \sim \pd(\bx)$ -- real samples;
-		\item $\cS_{p} = \{\bx_i\}_{i=1}^{n} \sim \pt(\bx)$ -- generated samples.
+		\item $\cS_{\text{data}} = \{\bx_i\}_{i=1}^{n} \sim \pd(\bx)$ -- real samples;
+		\item $\cS_{\btheta} = \{\bx_i\}_{i=1}^{n} \sim \pt(\bx)$ -- generated samples.
 	\end{itemize}
 	\eqpause
 	Define a binary function:
@@ -300,7 +300,7 @@
 	\eqpause
 	\vspace{-0.3cm}
 	\[
-		\text{Precision} (\cS_{\pi}, \cS_{p}) = \frac{1}{n} \sum_{\bx \in \cS_{p}} \bbI(\bx, \cS_{\pi}); \quad \text{Recall} (\cS_{\pi}, \cS_{p}) = \frac{1}{n} \sum_{\bx \in \cS_{\pi}} \bbI(\bx, \cS_{p}).
+		\text{Pr} (\cS_{\text{data}}, \cS_{\btheta}) = \frac{1}{n} \sum_{\bx \in \cS_{\btheta}} \bbI(\bx, \cS_{\text{data}}); \quad \text{Rec} (\cS_{\text{data}}, \cS_{\btheta}) = \frac{1}{n} \sum_{\bx \in \cS_{\text{data}}} \bbI(\bx, \cS_{\btheta}).
 	\]
 	\eqpause
 	\vspace{-0.6cm}
@@ -466,7 +466,7 @@
 	\begin{block}{Fisher Divergence}
 		\vspace{-0.7cm}
 		\begin{multline*}
-			D_F(\pi, p) = \frac{1}{2}\bbE_{\pi}\big\| \nabla_{\bx}\log \pt(\bx) - \nabla_\bx \log \pd(\bx) \big\|^2_2 =\\
+			D_F(\pd, \pt) = \frac{1}{2}\bbE_{\pi}\big\| \nabla_{\bx}\log \pt(\bx) - \nabla_\bx \log \pd(\bx) \big\|^2_2 =\\
 			= \frac{1}{2}\bbE_{\pi}\big\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pd(\bx) \big\|^2_2 \rightarrow \min_{\btheta}
 		\end{multline*}
 		\vspace{-0.3cm}
@@ -478,7 +478,7 @@
 	\begin{block}{Fisher Divergence}
 		\vspace{-0.3cm}
 		\[
-			D_F(\pi, p) = \frac{1}{2}\bbE_{\pi}\big\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pd(\bx) \big\|^2_2 \rightarrow \min_{\btheta}
+			D_F(\pd, \pt) = \frac{1}{2}\bbE_{\pi}\big\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pd(\bx) \big\|^2_2 \rightarrow \min_{\btheta}
 		\]
 		\vspace{-0.5cm}
 	\end{block}
