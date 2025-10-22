@@ -37,12 +37,12 @@ The course is accompanied by practical tasks that allow you to understand the pr
 |  |  | <b>Seminar 5:</b> VAE: Implementation hints. Vanilla 2D VAE coding. VAE on Binarized MNIST visualization. Posterior collapse. Beta VAE on MNIST.| [slides](seminars/seminar5/seminar5.ipynb) |
 | 6 | October, 21 | <b>Lecture 6:</b> Evaluation of generative models (FID, Precision-Recall, CLIP score, human eval). Langevin dynamic. Score matching. Denoising score matching. | [slides](lectures/lecture6/Lecture6.pdf) |
 |  |  | <b>Seminar 6:</b>  Vanilla GAN in 1D coding. Mode collapse and vanishing gradients. Non-saturating GAN. Wasserstein GAN (WGAN) and WGAN-GP | [slides](seminars/seminar6/seminar6_wgan.ipynb) |
-<!---
-| 7 | April, 3 | <b>Lecture 7:</b> Evaluation of generative models (FID, Precision-Recall, CLIP score, human eval). Langevin dynamic. Score matching. Denoising score matching. | [slides](lectures/lecture7/Lecture7.pdf) |
+| 7 | October, 28 | <b>Lecture 7:</b> Denoising score matching. Noise Conditioned Score Network (NCSN). Forward gaussian diffusion process. Denoising score matching for diffusion. Reverse Gaussian diffusion process. | [slides](lectures/lecture7/Lecture7.pdf) |
 |  |  | <b>Seminar 7:</b> Progressive Growing GAN. StyleGAN | [slides](seminars/seminar7/) |
-| 8 | April, 10 | <b>Lecture 8:</b>  Denoising score matching. Noise Conditioned Score Network (NCSN). Forward gaussian diffusion process. Denoising score matching for diffusion. Reverse Gaussian diffusion process. | [slides](lectures/lecture8/Lecture8.pdf) |
+| 8 | November, 3 | <b>Lecture 8:</b> Gaussian diffusion model as VAE. ELBO for Denoising diffusion probabilistic model (DDPM). Reparametrization and overview of DDPM. | [slides](lectures/lecture8/Lecture8.pdf) |
 |  |  | <b>Seminar 8:</b> Noise Conditioned Score Network (NCSN). Heuristic diffusion model. | [slides](seminars/seminar8/) |
-| 9 | April, 17 | <b>Lecture 9:</b> Gaussian diffusion model as VAE. ELBO for Denoising diffusion probabilistic model (DDPM). Reparametrization and overview of DDPM. | [slides](lectures/lecture9/Lecture9.pdf) |
+<!---
+| 9 | April, 17 | <b>Lecture 9:</b>  | [slides](lectures/lecture9/Lecture9.pdf) |
 |  |  | <b>Seminar 9:</b> Denoising diffusion probabilistic model (DDPM). Denoising Diffusion Implicit Models (DDIM). | [slides](seminars/seminar9/) |
 | 10 | April, 24 | <b>Lecture 10:</b> Denoising diffusion as score-based generative model. Model guidance: classifier guidance, classfier-free guidance. Continuous-in-time NF and neural ODE.  | [slides](lectures/lecture10/Lecture10.pdf) |
 |  |  | <b>Seminar 10:</b> Guidance. CLIP, GLIDE, DALL-E 2, Imagen. | [slides](seminars/seminar10/) |
