@@ -10,4 +10,127 @@
 	\resetonslide
 \end{frame}
 %=======
+\begin{frame}{Recap of Previous Lecture}
+\end{frame}
+%=======
+\begin{frame}{Outline}
+	\tableofcontents
+\end{frame}
+%=======
+\begin{frame}{Discrete or Continuous Diffusion Models?}
+	\textbf{Reminder:} Diffusion models define a forward corruption process and a reverse denoising process.
+	Previously, we studied diffusion models with continuous states $\bx(t) \in \mathbb{R}^m$.
+	\begin{block}{Continuous state space}
+		\begin{itemize}
+			\item \textbf{Discrete time} $t \in \{0,1,\ldots,T\}$ $\;\Rightarrow\;$ \textbf{DDPM / NCSN}.
+			\item \textbf{Continuous time} $t \in [0,1]$ $\;\Rightarrow\;$ \textbf{Score-based SDE models}.
+		\end{itemize}
+	\end{block}
+	\eqpause
+	Now we turn to diffusion over discrete-value states $\bx(t) \in \{1, \dots, K\}^m$.
+	\begin{block}{Discrete state space}
+		\begin{itemize}
+			\item \textbf{Discrete time} $t \in \{0,1,\ldots,T\}$.
+			\item \textbf{Continuous time} $t \in [0,1]$.
+		\end{itemize}
+	\end{block}
+	Let's discuss why we need discrete diffusion models.
+\end{frame}
+%=======
+\begin{frame}{Why Discrete Diffusion Models?}
+	\myfootnotewithlink{https://aaronlou.com/blog/2024/discrete-diffusion/}{https://aaronlou.com/blog/2024/discrete-diffusion/}
+	While autoregressive (AR) models dominate discrete-data domains (e.g., text or sequences), they have fundamental limitations.
+	\eqpause
+	\begin{block}{Key advantages of discrete diffusion}
+		\begin{itemize}
+			\item \textbf{Parallel generation:} diffusion enables sampling all tokens simultaneously, unlike AR’s strictly left-to-right process. 
+			\eqpause
+			\item \textbf{Flexible infilling:}. diffusion can mask arbitrary parts of a sequence and reconstruct them, rather than generating only from prefix to suffix.
+			\eqpause 
+			\item \textbf{Robustness:} diffusion avoids the "exposure bias" caused by teacher forcing in AR training.
+			\eqpause
+			\item \textbf{Unified framework:} diffusion generalizes naturally to discrete domains that do not suit continuous Gaussian noise.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Forward Discrete Process}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\begin{block}{Continuous Diffusion Markov Chain}
+		In continuous diffusion, the forward Markov chain is defined by progressively corrupting data with Gaussian noise:
+		\[
+			q(\bx_t|\bx_{t-1}) = \mathcal{N}(\sqrt{1-\beta_t}\bx_{t-1}, \beta_t \bI).
+		\]
+	\end{block}
+	\eqpause
+	\vspace{-0.3cm}
+	\begin{block}{Discrete Diffusion Markov Chain}
+		For discrete data, we instead define a Markov chain over categorical states:
+		\[
+			q(\bx_t|\bx_{t-1}) = \Cat(\bQ_t\bx_{t-1}),
+		\]
+		where $\bQ_t \in [0,1]^{K \times K}$ is a \textbf{transition matrix} where each column gives transition probabilities from one state to all others, and columns sum to 1:
+		\vspace{-0.3cm}
+		\[
+			[\bQ_t]_{ij} = q(x_t = i | x_{t-1} = j),
+			\qquad
+			\sum_{i=1}^K [\bQ_t]_{ij} = 1.
+		\]
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}
+	NOT READY
+\end{frame}
+%=======
+\begin{frame}{Forward (noising) process in discrete diffusion}
+
+	\begin{block}{Markov chain definition}
+	\[
+	q(\bx_{1:T}|\bx_0) = \prod_{t=1}^T q(\bx_t|\bx_{t-1}), \quad
+	q(\bx_t|\bx_{t-1}) = \mathrm{Cat}(\bx_t; Q_t[\bx_{t-1},:]).
+	\]
+	\end{block}
+
+	\begin{itemize}
+	\item $Q_t \in \mathbb{R}^{K \times K}$ — transition matrix between symbols.
+	\item Typical choices:
+		\begin{itemize}
+		\item \textbf{Uniform diffusion:} $Q_t = (1-\beta_t)I + \beta_t U$.
+		\item \textbf{Absorbing diffusion:} $Q_t(i,m)=\beta_t$ for mask token $m$.
+		\end{itemize}
+	\item After many steps, all tokens become random or masked.
+	\end{itemize}
+
+\end{frame}
+%=======
+\begin{frame}{Forward Process over Time}
+	\begin{itemize}
+		\item The forward diffusion gradually destroys information through repeated random transitions.
+		\eqpause
+		\item Applying transitions $t$ times yields a marginal distribution:
+			\[
+				q(\bx_t|\bx_0) = \Cat(\bQ_{1:t}\bx_0),
+				\qquad
+				\bQ_{1:t} = \bQ_t \bQ_{t-1}\cdots\bQ_1.
+			\]
+		\eqpause
+		\item This process drives the data towards a stationary (often uniform) distribution as $t\!\to\!T$.
+		\eqpause
+		\item Analogy:
+		\[
+			\text{Continuous diffusion: } 
+				\sigma_t^2 \uparrow \Rightarrow x_t \sim \mathcal{N}(0,I)
+			\quad\Longleftrightarrow\quad
+			\text{Discrete diffusion: }
+				\bQ_{1:t} \Rightarrow \text{Uniform noise.}
+		\]
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Summary}
+	\begin{itemize}
+		\item 
+	\end{itemize}
+\end{frame}
 \end{document}
