@@ -358,7 +358,7 @@
 			\frac{d \bmu(\bx(t), \bx(0))}{dt} = \bbE \left[ \bff(\bx(t), t) | \bx(0)\right]
 		\]
 		\[
-			\frac{d \bSigma(\bx(t), \bx(0))}{dt} = \bbE \left[ \bff \cdot (\bx(t) - \bmu)^T + (\bx(t) - \bmu) \cdot \bff^T | \bx(0)\right] + g^2(t) \cdot \bI
+			\frac{d \bSigma(\bx(t), \bx(0))}{dt} = \bbE \left[ \bff \cdot (\bx(t) - \bmu)^\top + (\bx(t) - \bmu) \cdot \bff^\top | \bx(0)\right] + g^2(t) \cdot \bI
 		\]
 	\end{block}
     \eqpause
@@ -632,16 +632,16 @@
 		{\small
 		\begin{multline*}
 			\bbE_{\bx \sim p_t(\bx)}\left\| \bff(\bx, t) - \bff_{\btheta}(\bx, t) \right\|^2 = \\ 
-			= {\color{olive}\bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}}\left[\| \bff_{\btheta}(\bx, t) \|^2 - 2 {\color{teal}\bff_{\btheta}^T(\bx, t)\bff(\bx, t)} \right] + \text{const}(\btheta)
+			= {\color{olive}\bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}}\left[\| \bff_{\btheta}(\bx, t) \|^2 - 2 {\color{teal}\bff_{\btheta}^\top(\bx, t)\bff(\bx, t)} \right] + \text{const}(\btheta)
 		\end{multline*}
 		}
 		\eqpause
 		\vspace{-1.0cm}
 		{\small
 		\begin{multline*}
-			\bbE_{p_t(\bx)} \left[{\color{teal}\bff_{\btheta}^T(\bx, t)\bff(\bx, t)} \right] = \int p_t(\bx) \left[\bff_{\btheta}^T(\bx, t) \left( \int p_t(\bz | \bx)\bff(\bx, \bz, t)d\bz \right) \right] d\bx 
-			\nextonslide{ = \\ = \int \int {\color{violet}p_t(\bx) p_t(\bz | \bx)} \left[\bff_{\btheta}^T(\bx, t) \bff(\bx, \bz, t) \right] d\bz d\bx}
-			\nextonslide{ = \\ = {\color{violet}\bbE_{p(\bz)} \bbE_{p_t(\bx | \bz)}} \left[\bff_{\btheta}^T(\bx, t) \bff(\bx, \bz, t) \right]}
+			\bbE_{p_t(\bx)} \left[{\color{teal}\bff_{\btheta}^\top(\bx, t)\bff(\bx, t)} \right] = \int p_t(\bx) \left[\bff_{\btheta}^\top(\bx, t) \left( \int p_t(\bz | \bx)\bff(\bx, \bz, t)d\bz \right) \right] d\bx 
+			\nextonslide{ = \\ = \int \int {\color{violet}p_t(\bx) p_t(\bz | \bx)} \left[\bff_{\btheta}^\top(\bx, t) \bff(\bx, \bz, t) \right] d\bz d\bx}
+			\nextonslide{ = \\ = {\color{violet}\bbE_{p(\bz)} \bbE_{p_t(\bx | \bz)}} \left[\bff_{\btheta}^\top(\bx, t) \bff(\bx, \bz, t) \right]}
 		\end{multline*}
 		}
 	\end{block}

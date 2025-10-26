@@ -404,7 +404,7 @@
 		Consider energy-based model $p(\bx) = \frac{\hat{p}(\bx)}{Z}$, $\hat{p}(\bx) = \exp(-f(\bx))$, with continuously differentiable $f(\bx): \bbR^m \rightarrow \bbR$ that satisfies
 		\begin{itemize}
 			\item $L$-smoothness: $\| \nabla f(\bx) - \nabla f(\by)\| \leq L \|\bx - \by \|$;
-			\item Strong convexity: $(\nabla f(\bx) - \nabla f(\by))^T(\bx - \by) \geq m \| \bx - \by \|^2 $ for some $m > 0$.
+			\item Strong convexity: $(\nabla f(\bx) - \nabla f(\by))^\top(\bx - \by) \geq m \| \bx - \by \|^2 $ for some $m > 0$.
 		\end{itemize}
 		Consider a Markov chain $\bx_{l + 1} = \bx_l + \frac{\eta}{2} \cdot \nabla_{\bx_l} \log \hat{p}(\bx_l) + \sqrt{\eta} \cdot \bepsilon_l$, where $\bepsilon_l \sim \cN(0, \bI)$.
 		Then, for any $\eta < \frac{2}{L}$

@@ -35,14 +35,14 @@
 		\item Variational posterior distribution:
 		\vspace{-0.2cm}
 		\[
-			q(\bz | \bx) = q(\bx_1, \dots, \bx_T | \bx_0) = \prod_{t = 1}^T q(\bx_t | \bx_{t - 1}).
+			q(\bz | \bx) = q(\bx_1, \dots, \bx_T | \bx_0) = \prod_{t = 1}^\top q(\bx_t | \bx_{t - 1}).
 		\]
 		\vspace{-0.3cm}
 		\item Generative model and prior:
 		\vspace{-0.2cm}
 		\[
 			\pt(\bx | \bz) = \pt(\bx_0 | \bx_1); \quad 
-			\pt(\bz) = \prod_{t=2}^T \pt(\bx_{t - 1} | \bx_t) \cdot p(\bx_T)
+			\pt(\bz) = \prod_{t=2}^\top \pt(\bx_{t - 1} | \bx_t) \cdot p(\bx_T)
 		\]
 	\end{itemize}
 	\vspace{-0.2cm}
@@ -54,7 +54,7 @@
 		\vspace{-0.5cm}
 		\begin{multline*}
 			\cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
-			- \sum_{t=2}^T  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}
+			- \sum_{t=2}^\top  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}
 		\end{multline*}
 	\end{block}
 \end{frame}
@@ -65,7 +65,7 @@
 		\vspace{-0.7cm}
 		\begin{multline*}
 			\cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
-			- \sum_{t=2}^T  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}
+			- \sum_{t=2}^\top  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}
 		\end{multline*}
 		\vspace{-1.0cm}
 	\end{block}
