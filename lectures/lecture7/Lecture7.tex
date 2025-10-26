@@ -203,7 +203,7 @@
 		{\small
 		\begin{multline*}
 			\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2 = \\ 
-			= \bbE_{q(\bx_{\sigma})} \Bigl[\| \bs_{\btheta, \sigma}(\bx_{\sigma}) \|^2 + \underbrace{\| \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \|_2^2}_{\text{const}(\btheta)} - 2 {\color{teal}\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})} \Bigr]
+			\nextonslide{= \bbE_{q(\bx_{\sigma})} \Bigl[\| \bs_{\btheta, \sigma}(\bx_{\sigma}) \|^2 + \underbrace{\| \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \|_2^2}_{\text{const}(\btheta)} - 2 {\color{teal}\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})} \Bigr]}
 		\end{multline*}
 		}
 	\end{block}
@@ -219,12 +219,12 @@
 		\end{multline*}
 		\vspace{-0.5cm}
 	\end{block}
-    \eqpause
 	\begin{block}{Proof (Continued)}
 		\vspace{-0.7cm}
 		{\small
 		\begin{multline*}
-			\bbE_{q(\bx_{\sigma})} \left[{\color{teal}\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})} \right] = \int q(\bx_{\sigma}) \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \frac{\nabla_{\bx_{\sigma}} {\color{violet}q(\bx_{\sigma})}}{q(\bx_{\sigma})} \right] d\bx_{\sigma} 
+			\bbE_{q(\bx_{\sigma})} \left[{\color{teal}\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})} \right] 
+			\nextonslide{= \int q(\bx_{\sigma}) \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \frac{\nabla_{\bx_{\sigma}} {\color{violet}q(\bx_{\sigma})}}{q(\bx_{\sigma})} \right] d\bx_{\sigma}}
 			\nextonslide{= \\ = \int \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}}\left({\color{violet}\int q(\bx_{\sigma} | \bx) \pd(\bx) d\bx}\right) \right] d\bx_{\sigma}}
 			\nextonslide{ = \\ =  \int \int \pd(\bx) \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{olive}\nabla_{\bx_{\sigma}}q(\bx_{\sigma} | \bx)} \right] d\bx_{\sigma} d\bx}
 			\nextonslide{ = \\ = \int \int \pd(\bx) {\color{olive} q(\bx_{\sigma} | \bx)} \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{olive}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right] d\bx_{\sigma} d\bx}
