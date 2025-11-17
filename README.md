@@ -41,7 +41,7 @@ The course is accompanied by practical tasks that allow you to understand the pr
 |  |  | <b>Seminar 7:</b> Progressive Growing GAN. StyleGAN | [slides](seminars/seminar7/) |
 | 8 | November, 3 | <b>Lecture 8:</b> Gaussian diffusion model as VAE. ELBO for Denoising diffusion probabilistic model (DDPM). Reparametrization and overview of DDPM. | [slides](lectures/lecture8/Lecture8.pdf) |
 |  |  | <b>Seminar 8:</b> Noise Conditioned Score Network (NCSN). Heuristic diffusion model. | [slides](seminars/seminar8/) |
-| 9 | April, 17 | <b>Lecture 9:</b> Denoising diffusion as score-based generative model. Model guidance: classifier guidance, classfier-free guidance. Continuous-in-time NF and neural ODE. | [slides](lectures/lecture9/Lecture9.pdf) |
+| 9 | November, 18 | <b>Lecture 9:</b> Denoising diffusion as score-based generative model. Model guidance: classifier guidance, classfier-free guidance. Continuous-in-time NF and neural ODE. | [slides](lectures/lecture9/Lecture9.pdf) |
 |  |  | <b>Seminar 9:</b> Denoising diffusion probabilistic model (DDPM). Denoising Diffusion Implicit Models (DDIM). | [slides](seminars/seminar9/) |
 <!---
 | 10 | April, 24 | <b>Lecture 10:</b>   | [slides](lectures/lecture10/Lecture10.pdf) |
