@@ -171,6 +171,24 @@
 \section{Conditional Flow Matching}
 %=======
 \begin{frame}{Conditional Flow Matching}
+    \myfootnotewithlink{https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching}{image credit: A Visual Dive into Conditional Flow Matching}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.75\linewidth]{figs/cfm_uncond_to_cond}
+	\end{figure}
+    \eqpause
+	\begin{itemize}
+		\item We don't want to directly model $p_t(\bx)$, since it's complex.
+		\item We've shown it's possible to solve the CFM task instead of the FM task.
+		\item Let's choose a convenient conditioning latent variable $\bz$.
+		\item We'll parametrize $p_t(\bx | \bz)$ instead of $p_t(\bx)$. It should satisfy the following constraints:
+		\[
+			p(\bx) = \cN(0, \bI) = \bbE_{p(\bz)} p_0(\bx | \bz); \quad \pd(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz).
+		\]
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Conditional Flow Matching}
 	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
 	\[
 		\bbE_{t \sim U[0, 1]} \bbE_{\bz \sim p(\bz)} \bbE_{\bx_t \sim p_t(\bx | \bz)}\left\| \bff(\bx_t, \bz, t) - \bff_{\btheta}(\bx_t, t) \right\|^2 \rightarrow \min_{\btheta}
