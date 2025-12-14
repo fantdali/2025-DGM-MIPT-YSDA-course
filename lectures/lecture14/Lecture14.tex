@@ -10,7 +10,6 @@
 	\resetonslide
 \end{frame}
 %=======
-
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
 	\[
@@ -43,6 +42,181 @@
 		\centering
 		\includegraphics[width=0.5\linewidth]{figs/trajectories}
 	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\begin{block}{Continuous state space}
+		\begin{itemize}
+			\item \textbf{Discrete time} $t \in \{0,1,\ldots,T\}$ $\;\Rightarrow\;$ \textbf{DDPM / NCSN}.
+			\item \textbf{Continuous time} $t \in [0,1]$ $\;\Rightarrow\;$ \textbf{Score-based SDE models}.
+		\end{itemize}
+	\end{block}
+	\begin{block}{Discrete state space}
+		\begin{itemize}
+			\item \textbf{Discrete time} $t \in \{0,1,\ldots,T\}$.
+			\item \textbf{Continuous time} $t \in [0,1]$.
+		\end{itemize}
+	\end{block}
+    \begin{block}{Key advantages of discrete diffusion}
+		\begin{itemize}
+			\item Parallel generation
+			\item Flexible infilling
+			\item Robustness
+			\item Unified framework
+        \end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\begin{block}{Discrete Diffusion Markov Chain}
+		\[
+			q(\bx_t|\bx_{t-1}) = \Cat(\bQ_t\bx_{t-1}),
+		\]
+        Each $\bx_t \in \{0,1\}^K$ is a \textbf{one-hot vector} encoding the categorical state (it is just one token).
+	\end{block}
+    \begin{block}{Transition Matrix}
+		\vspace{-0.5cm}
+		\[
+			[\bQ_t]_{ij} = q(x_t = i | x_{t-1} = j),
+			\qquad
+			\sum_{i=1}^K [\bQ_t]_{ij} = 1.
+		\]
+        \[
+            q(\bx_t|\bx_0) = \Cat(\bQ_{1:t}\bx_0),
+            \qquad
+            \bQ_{1:t} = \bQ_t \bQ_{t-1}\cdots\bQ_1.
+        \]
+		\vspace{-0.5cm}
+	\end{block}
+    \begin{itemize}
+		\item The choice of $\bQ_t$ determines how information is erased and what the stationary distribution becomes.
+		\item $\bQ_t$ and $\bQ_{1:t}$ should be easy to compute for each $t$.
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\begin{block}{Common choices}
+		\begin{itemize}
+			\item \textbf{Uniform diffusion}
+			\[
+				\bQ_t = (1 - \beta_t) \bI + \beta_t \bU,
+				\qquad
+				\mathbf{U}_{ij} = \tfrac{1}{K}.
+			\]
+            \[
+                \bQ_{1:t} = \bar\alpha_t\bI + (1 - \bar\alpha_t) \mathbf{U},
+                \quad
+                \bar\alpha_t = \prod_{s=1}^t (1-\beta_s).
+            \]
+			\item \textbf{Absorbing diffusion}
+			\[
+				\bQ_t = (1-\beta_t)\bI + \beta_t\, \mathbf{e}_m \mathbf{1}^\top.
+			\]
+            \[
+                \bQ_{1:t} = \bar\alpha_t\,\bI + (1-\bar\alpha_t)\,\mathbf{e}_m \mathbf{1}^\top,
+                \qquad
+                \bar\alpha_t = \prod_{s=1}^t (1-\beta_s).
+            \]
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\begin{block}{Uniform vs. Absorbing Transition Matrix}
+        \begin{table}[h!]
+            \centering
+            \small
+            \begin{tabular}{lcc}
+                \toprule
+                \textbf{Aspect} & \textbf{Uniform Diffusion} & \textbf{Absorbing Diffusion} \\
+                \midrule
+                $\bQ_t$
+                    & $(1-\beta_t)\bI + \beta_t \mathbf{U}$ 
+                    & $(1-\beta_t)\bI + \beta_t \mathbf{e}_m\mathbf{1}^\top$ \\[4pt]
+                $\bQ_{1:t}$
+                    & $\bar\alpha_t \bI + (1-\bar\alpha_t)\mathbf{U}$
+                    & $\bar\alpha_t \bI + (1-\bar\alpha_t)\mathbf{e}_m\mathbf{1}^\top$ \\[4pt]
+                $\bQ_{1:\infty}$
+                    & $\mathbf{U}$
+                    & $\Cat(\mathbf{e}_m)$ \\[4pt]
+                Interpretation
+                    & Random replacement
+                    & Gradual masking of tokens \\[4pt]
+                Application
+                    & Image / symbol diffusion
+                    & Text diffusion $\approx$ Masked LM \\[4pt]
+                \bottomrule
+            \end{tabular}
+        \end{table}
+    \end{block}
+	\begin{block}{Observation}
+		Both schemes gradually destroy information, but differ in their stationary limit.
+		Absorbing diffusion bridges diffusion and masked-language-model objectives.
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\begin{block}{ELBO}
+		\vspace{-0.7cm}
+		\begin{multline*}
+            \cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
+            - {\color{teal}\sum_{t=2}^\top \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}}
+        \end{multline*}
+		\vspace{-0.7cm}
+	\end{block}
+	\begin{block}{Discrete conditioned reverse distribution}
+		\[
+			q(\bx_{t-1} | \bx_t, \bx_0)
+			= \Cat\left(\frac{\bQ_t \bx_t \odot \bQ_{1:t-1} \bx_0}{\bx_t^{\top}\bQ_{1:t}\bx_0}\right).
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{itemize}
+		\item Both $q(\bx_{t-1} | \bx_t, \bx_0)$ and $q(\bx_t | \bx_0)$ are known analytically from the forward process.
+		\item The reverse process $\pt(\bx_{t-1} | \bx_t)$ is a learned categorical distribution:
+		\vspace{-0.3cm}
+        \[
+			\pt(\bx_{t-1} | \bx_t) = \Cat\bigl( \bpi_{\btheta}(\bx_t, t) \bigr).
+		\]
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+
+	\begin{block}{ELBO term}
+		\vspace{-0.3cm}
+		\[
+			\cL_t
+			= \bbE_{q(\bx_t | \bx_0)}
+			\KL\bigl(q(\bx_{t-1} | \bx_t, \bx_0) \,\|\, \pt(\bx_{t-1} | \bx_t)\bigr).
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\eqpause
+	\begin{block}{Categorical KL}
+		\vspace{-0.3cm}
+		\[
+			\KL\bigl(\Cat(\bq) \,\|\, \Cat(\bp)\bigr)
+			= \sum_{k=1}^K q_k \log \frac{q_k}{p_k}
+			= \Ent(\bq,\bp) - \Ent(\bq),
+		\]
+		\eqpause
+		\begin{itemize}
+			\item $\Ent\bigl(q(\bx_{t-1} | \bx_t, \bx_0)\bigr)$ is a constant w.r.t.~$\btheta$.
+			\item $\Ent(\bq,\bp) = -\sum_k q_k \log p_k$ is a \textbf{cross-entropy loss}.
+		\end{itemize}
+	\end{block}
+	\eqpause
+	Therefore, minimizing $\cL_t$ w.r.t.~$\btheta$ is equivalent to minimizing
+	\[
+		\bbE_{q(\bx_t | \bx_0)}
+		\Ent\Bigl(q(\bx_{t-1} | \bx_t, \bx_0),\, \pt(\bx_{t-1} | \bx_t)\Bigr).
+	\]
 \end{frame}
 %=======
 \begin{frame}{Outline}
