@@ -23,6 +23,8 @@ The course is accompanied by practical tasks that allow you to understand the pr
 
 ## Materials
 
+https://disk.yandex.ru/d/fQGXuoTEcAw03g
+
 | # | Date | Description | Slides |
 |---|---|---|---|
 | 1 | September, 16 | <b>Lecture 1:</b> Logistics. Generative models overview and motivation. Problem statement. Divergence minimization framework. Autoregressive models (ImageGPT). | [slides](lectures/lecture1/Lecture1.pdf) |
