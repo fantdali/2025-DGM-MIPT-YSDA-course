@@ -2,6 +2,8 @@
 \input{../utils/preamble}
 \createdgmtitle{14}
 
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit}
 %--------------------------------------------------------------------------------
 \begin{document}
 %--------------------------------------------------------------------------------
@@ -532,13 +534,187 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}
-	NOT READY
+\section{Course Overview}
+%=======
+\begin{frame}{Course Overview: Problem Statement}
+	\begin{block}{Goal}
+		Learn a generative model $\pt(\bx)$ that matches the data distribution $\pd(\bx)$.
+	\end{block}
+
+	\begin{block}{Three similar lenses}
+		\begin{itemize}
+			\item \textbf{Divergence minimization:}
+			\[
+				\min_{\btheta} D\left(\pd || \pt\right)
+				\qquad (\text{KL, JS, Wasserstein, etc.})
+			\]
+			\vspace{-0.3cm}
+			\item \textbf{Likelihood-based modeling:} maximize $\log \pt(\bx)$ (NF, VAE, diffusion-as-VAE).
+			\item \textbf{Score-based modeling:} learn $\nabla_{\bx} \log p(\bx)$ (DDPM / NCSN / SDE).
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{What We Covered: Part 1}
+	\begin{block}{Likelihood-based}
+		\begin{itemize}
+			\item \textbf{Autoregressive (L1)}:
+			\[
+				\pt(\bx)=\prod_{i=1}^n \pt(x_i|\bx_{1:i})
+			\]
+			\item \textbf{Normalizing Flows (L2, L10)}:
+			\[
+				\bx=\bff_{\btheta}(\bz), 
+				\quad 
+				\log \pt(\bx)
+				=\log p(\bz)
+				+\log\left|\det \frac{\partial \bz}{\partial \bx}\right|
+			\]
+			\item \textbf{VAE (L3--L4)}:
+			\[
+				\log \pt(\bx)\ge \bbE_{q_{\bphi}(\bz|\bx)}[\log \pt(\bx|\bz)]-\KL(q_{\bphi}(\bz|\bx)||p(\bz))
+			\]
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{What We Covered: Part 2}
+	\begin{block}{Implicit / Score-based}
+		\begin{itemize}
+			\item \textbf{GAN (L5)}: implicit $\pt$, adversarial learning (close to JSD)
+			\item \textbf{Score matching (L6)}: learn $\bs_{\btheta}(\bx)\approx\nabla_{\bx}\log \pd(\bx)$
+			\item \textbf{Diffusion / DDPM (L7--L9)}:
+			forward noising $q(\bx_t|\bx_{t-1})$ + reverse denoising
+			\item \textbf{SDE / Flow matching (L10--L12)}:
+			reverse SDE $\leftrightarrow$ probability flow ODE, vector field (Neural ODE) / flow matching
+			\item \textbf{Discrete diffusion (L13--L14)}:
+			Markov chain on categorical states 
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Mental Map}
+	\centering
+	\begin{tikzpicture}[
+		scale=0.9,
+		transform shape,
+		box/.style={draw, rounded corners, align=center, inner sep=3pt},
+		arr/.style={-{Latex[length=1.5mm]}, thick},
+		node distance=7mm and 3mm
+	]
+	\node[box] (div) {Divergence min.\\ $D(p_{\text{data}}\|p_\theta)$ (L1)};
+	\node[box, below left=of div] (lik) {Likelihood-based\\ NF (L2) / VAE (L3--4)};
+	\node[box, below right=of div] (imp) {Implicit / Adversarial\\ GAN (L5)};
+
+	\node[box, below=of lik] (flows) {Continuous change of variables\\ Neural ODE / CNF (L9--10)};
+	\node[box, below=of imp] (score) {Score-based\\ DSM / NCSN (L6--7)};
+
+	\node[box, below=of flows] (sde) {SDE bridge\\ Reverse SDE / PF-ODE (L10--11)};
+	\node[box, below=of score] (ddpm) {Diffusion\\ DDPM as ELBO (L7--9)};
+
+	\node[box, below=14mm of sde, xshift=16mm] (fm) {Flow matching\\ (L11--12)};
+	\node[box, below=14mm of ddpm, xshift=-16mm] (disc) {Discrete diffusion\\ Masked / absorbing\\ (L13--14)};
+
+	\draw[arr] (div) -- (lik);
+	\draw[arr] (div) -- (imp);
+	\draw[arr] (lik) -- (flows);
+	\draw[arr] (score) -- (ddpm);
+	\draw[arr] (flows) -- (sde);
+	\draw[arr] (ddpm) -- (sde);
+	\draw[arr] (sde) -- (fm);
+	\draw[arr] (ddpm) -- (disc);
+	\draw[arr] (score) -- (sde);
+	\end{tikzpicture}
+\end{frame}
+%=======
+\begin{frame}{Comparison Cheat-Sheet: Part 1}
+	\renewcommand{\arraystretch}{1.5}
+	\center
+	\begin{tabular}{lcccc}
+		\hline
+		\textbf{Family} & \textbf{Likelihood} & \textbf{Training} \\
+		\hline
+		AR & \checkmark & stable CE \\
+		NF & \checkmark & tricky architecture \\
+		VAE & lower bound & stable ELBO \\
+		GAN & $\times$ & unstable/minimax \\
+		Diffusion & bound / est. & stable \\
+		FM / ODE & est. / bound & stable \\
+		Discr. diff. & bound / CE-like & stable \\
+		\hline
+	\end{tabular}
+\end{frame}
+%=======
+\begin{frame}{Comparison Cheat-Sheet: Part 2}
+	\renewcommand{\arraystretch}{1.5}
+	\center
+	\begin{tabular}{lcccc}
+	\hline
+	\textbf{Family} & \textbf{Sampling} & \textbf{Best for} \\
+	\hline
+	AR & slow (sequential) & text / discrete \\
+	NF & fast (1 step) & exact density, OOD \\
+	VAE & fast (1 step) & latent modelling \\
+	GAN & fast (1 step) & sharp images \\
+	Diffusion & slow (many steps) & high fidelity + diversity \\
+	FM / ODE & medium--fast & fewer steps + theory \\
+	Discr. diff. & iterative & sequences + bidirectional gen \\
+	\hline
+	\end{tabular}
+\end{frame}
+%=======
+\begin{frame}{Generative Learning Trilemma}
+	\myfootnotewithlink{https://arxiv.org/abs/2112.07804}{Xiao Z., Kreis K., Vahdat A. Tackling the generative learning trilemma with denoising diffusion GANs, 2021}
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{figs/trilemma}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Generative Learning Trilemma}
+	\begin{block}{Rule of Thumb}
+	\small
+		\begin{itemize}
+			\item \textbf{Likelihood $\;\&\;$ Coverage} $\Rightarrow$ 
+			\textbf{AR / NF}  
+			\hfill exact density, no mode dropping, \textit{slow sampling}
+
+			\item \textbf{Likelihood $\;\&\;$ Fast Sampling} $\Rightarrow$ 
+			\textbf{VAE}  
+			\hfill tractable bound, fast, \textit{blurry samples}
+
+			\item \textbf{Sample Quality $\;\&\;$ Fast Sampling} $\Rightarrow$ 
+			\textbf{GAN}  
+			\hfill sharp samples, \textit{no likelihood, mode collapse}
+
+			\item \textbf{Quality $\;\&\;$ Coverage} $\Rightarrow$ 
+			\textbf{Diffusion}  
+			\hfill stable training, high fidelity, \textit{slow sampling}
+
+			\item \textbf{Quality $\;\&\;$ Faster Sampling} $\Rightarrow$ 
+			\textbf{FM / ODE}  
+			\hfill fewer steps, continuous flows, \textit{approx.\ likelihood}
+
+			\item \textbf{Discrete Structure $\;\&\;$ Coverage} $\Rightarrow$ 
+			\textbf{Discrete Diffusion}  
+			\hfill stable CE training, parallel denoising, \textit{iterative decoding}
+		\end{itemize}
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item Most state-of-the-art generative models are latent variable models with either continuous or discrete latent spaces.
+		\item For sequences, the forward process of discrete diffusionfactorize over positions, but
+		reverse process (the model $\pt$) conditions on the whole context.
+		\vfill
+		\item In the absorbing case, tokens are either unchanged or masked; so only masked tokens contribute to the ELBO loss.
+		\vfill
+		\item The discrete ELBO reduces to a MLM objective.
+		\vfill
+		\item Reparameterizing time by the mask rate $\lambda\in[0,1]$ yields a continuous mixture of MLM losses.
+		\vfill
+		\item MDLM sampling performs iterative parallel refinement from fully masked to fully unmasked sequences.
+		\vfill
+		\item No generative model is strictly better than all others: different methods occupy different corners of the generative learning trilemma and come with unavoidable disadvantages.
 	\end{itemize}
 \end{frame}
 %=======
