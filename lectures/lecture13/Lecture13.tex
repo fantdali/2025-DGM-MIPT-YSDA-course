@@ -177,7 +177,7 @@
 			\item Sample $\bx_1 \sim \pd(\bx)$.
 			\item Sample time $t \sim U[0, 1]$ and $\bx_0 \sim \cN(0, \bI)$.
 			\item Obtain the noisy image $\bx_t = t \bx_1 + (1 - t) \bx_0$.
-			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bff_{\btheta}(\bx, t) \right\|^2 $.
+			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bff_{\btheta}(\bx_t, t) \right\|^2 $.
 		\end{enumerate}
 	\end{block}
 	\vspace{-0.3cm}
@@ -256,7 +256,7 @@
 			\item Sample $(\bx_0, \bx_1) \sim p(\bx_0, \bx_1)$.
 			\item Sample time $t \sim U[0, 1]$.
 			\item Compute the noisy image $\bx_t = t \bx_1 + (1 - t) \bx_0$.
-			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bff_{\btheta}(\bx, t) \right\|^2 $.
+			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bff_{\btheta}(\bx_t, t) \right\|^2 $.
 		\end{enumerate}
 	\end{block}
 	\vspace{-0.3cm}
@@ -311,7 +311,7 @@
 %=======
 \begin{frame}{Score-Based Generative Models through SDEs}
 	\[
-		p_t(\bx_t| \bx_1) = q_{1-t}(\bx_{1-t}| \bx_0=\bx_1)
+		p_t(\bx| \bx_1) = q_{1-t}(\bx| \bx_0=\bx_1)
 	\]
 	\[
 		\textbf{VE (NCSN): } p_t(\bx | \bx_1) = \cN\left(\bx_1, \sigma^2_{1-t} \cdot \bI\right)
@@ -582,7 +582,7 @@
 				& Random replacement
 				& Gradual masking of tokens \\[4pt]
 			Application
-				& Image / symbol diffusion
+				& Image diffusion
 				& Text diffusion $\approx$ Masked LM \\[4pt]
 			\bottomrule
 		\end{tabular}
