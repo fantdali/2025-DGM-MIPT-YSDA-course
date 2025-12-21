@@ -17,14 +17,14 @@
 	\]
 	\vspace{-0.3cm}
 	\[
-		p_t(\bx_t| \bx_1) = q_{1-t}(\bx_{1-t}| \bx_0=\bx_1)
+		p_t(\bx| \bx_1) = q_{1-t}(\bx| \bx_0=\bx_1)
 	\]
 	\vspace{-0.5cm}
 	\begin{block}{Variance Exploding SDE}
 		\vspace{-0.7cm}
 		\[
-				p_t(\bx_t | \bx_1) = \cN\left(\bx_1, \sigma^2_{1-t}  \bI\right) \quad \Rightarrow \quad 
-				\bff(\bx_t, \bx_1, t) = - \frac{\sigma'_{1-t}}{\sigma_{1-t}} (\bx_t - \bx_1)
+				p_t(\bx | \bx_1) = \cN\left(\bx_1, \sigma^2_{1-t}  \bI\right) \quad \Rightarrow \quad 
+				\bff(\bx, \bx_1, t) = - \frac{\sigma'_{1-t}}{\sigma_{1-t}} (\bx_t - \bx_1)
 		\]
 		\vspace{-0.7cm}
 	\end{block}
@@ -96,34 +96,6 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
-	\begin{block}{Common choices}
-		\begin{itemize}
-			\item \textbf{Uniform diffusion}
-			\[
-				\bQ_t = (1 - \beta_t) \bI + \beta_t \bU,
-				\qquad
-				\mathbf{U}_{ij} = \tfrac{1}{K}.
-			\]
-            \[
-                \bQ_{1:t} = \bar\alpha_t\bI + (1 - \bar\alpha_t) \mathbf{U},
-                \quad
-                \bar\alpha_t = \prod_{s=1}^t (1-\beta_s).
-            \]
-			\item \textbf{Absorbing diffusion}
-			\[
-				\bQ_t = (1-\beta_t)\bI + \beta_t\, \mathbf{e}_m \mathbf{1}^\top.
-			\]
-            \[
-                \bQ_{1:t} = \bar\alpha_t\,\bI + (1-\bar\alpha_t)\,\mathbf{e}_m \mathbf{1}^\top,
-                \qquad
-                \bar\alpha_t = \prod_{s=1}^t (1-\beta_s).
-            \]
-		\end{itemize}
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
 	\begin{block}{Uniform vs. Absorbing Transition Matrix}
         \begin{table}[h!]
@@ -146,7 +118,7 @@
                     & Random replacement
                     & Gradual masking of tokens \\[4pt]
                 Application
-                    & Image / symbol diffusion
+                    & Image diffusion
                     & Text diffusion $\approx$ Masked LM \\[4pt]
                 \bottomrule
             \end{tabular}
@@ -197,7 +169,6 @@
 		\]
 		\vspace{-0.3cm}
 	\end{block}
-	\eqpause
 	\begin{block}{Categorical KL}
 		\vspace{-0.3cm}
 		\[
@@ -205,13 +176,11 @@
 			= \sum_{k=1}^K q_k \log \frac{q_k}{p_k}
 			= \Ent(\bq,\bp) - \Ent(\bq),
 		\]
-		\eqpause
 		\begin{itemize}
 			\item $\Ent\bigl(q(\bx_{t-1} | \bx_t, \bx_0)\bigr)$ is a constant w.r.t.~$\btheta$.
 			\item $\Ent(\bq,\bp) = -\sum_k q_k \log p_k$ is a \textbf{cross-entropy loss}.
 		\end{itemize}
 	\end{block}
-	\eqpause
 	Therefore, minimizing $\cL_t$ w.r.t.~$\btheta$ is equivalent to minimizing
 	\[
 		\bbE_{q(\bx_t | \bx_0)}
@@ -224,6 +193,102 @@
 \end{frame}
 %=======
 \section{Discrete Diffusion}
+%=======
+\subsection{From Token To Sequence}
+%=======
+\begin{frame}{From Token To Sequence}
+    \begin{block}{One-hot sequence representation}
+        \vspace{-0.3cm}
+        \[
+            \bx_t \in \{0,1\}^K
+            \quad\Leftrightarrow\quad
+            \bX_t \in \{0,1\}^{K \times m}
+        \]
+        \vspace{-0.2cm}
+		Here $\bX_t$ is a one-hot representation for sequence of tokens.
+    \end{block}
+	\eqpause
+    \begin{block}{Independent Token-wise Forward Process}
+        \vspace{-0.3cm}
+        \[
+            q(\bX_t |\bX_{t-1}) =
+            \prod_{i=1}^m q(\bx_t^i |\bx_{t-1}^i) = \Cat(\bQ_t \bX_{t-1}).
+        \]
+        \vspace{-0.3cm}
+        \begin{itemize}
+            \item Each position $i$ runs its own Markov chain.
+            \item Often the same transition matrix $\bQ_t$ is shared across~$i$.
+        \end{itemize}
+    \end{block}
+	\eqpause
+    \begin{block}{Continuous Diffusion Analogy}
+        \begin{itemize}
+            \item Gaussian DDPM with diagonal covariance: noise is independent per pixel.
+            \item Structure is not in the noise -- it is learned by the reverse model.
+        \end{itemize}
+    \end{block}
+\end{frame}
+%=======
+\begin{frame}{From Token To Sequence}
+	\[
+		q(\bX_t |\bX_{t-1}) =
+		\prod_{i=1}^m q(\bx_t^i |\bx_{t-1}^i) = \Cat(\bQ_t \bX_{t-1}).
+	\]
+	\eqpause
+	\[
+		q(\bX_t |\bX_{t-1}) = \Cat(\bQ_{1:t} \bX_0).
+	\]
+	\vspace{-0.3cm}
+	\eqpause
+    \begin{block}{Conditioned Reverse Distribution}
+		\[
+			q(\bx_{t-1} | \bx_t, \bx_0)
+			= \Cat\left(\frac{\bQ_t \bx_t \odot \bQ_{1:t-1} \bx_0}{\bx_t^{\top}\bQ_{1:t}\bx_0}\right).
+		\]
+        \vspace{-0.3cm}
+        \[
+            q(\bX_{t-1} | \bX_t, \bX_0) =
+            \prod_{i=1}^m q(\bx_{t-1}^i |\bx_t^i, \bx_0^i).
+        \]
+        \vspace{-0.3cm}
+    \end{block}
+	\eqpause
+    \begin{itemize}
+		\item Every distribution based on forward process is factorized. 
+		\item The dependence appear in the reverse process
+	\end{itemize}
+\end{frame}
+\begin{frame}{Reverse Model For Sequence}
+	\[
+		p_\theta(\bX_{t-1}|\bX_t) =
+		\prod_{i=1}^m p_\theta(\bx_{t-1}^i | {\color{violet}\bX_t}).
+	\]
+	\vspace{-0.3cm}
+	\begin{itemize}
+		\item Output factorizes (parallel prediction across positions).
+		\item But each factor conditions on the entire noisy sequence ${\color{violet}\bx_t}$.
+		\item This is exactly the \textbf{masked language modeling} pattern.
+	\end{itemize}
+	\eqpause
+	\begin{block}{Objective: $\cL_t$ term}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\KL\left(q(\bX_{t-1}| \bX_t, \bX_0)\,\|\,p_\theta(\bX_{t-1}| \bX_t)\right) \\
+			= \sum_{i=1}^m \KL\left(q(\bx_{t-1}^i|\bx_t^i, \bx_0^i) || \pt(\bx_{t-1}^i|\bx_t)\right).
+		\end{multline*}
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	\begin{block}{Final objective: masked LM}
+		\vspace{-0.3cm}
+        \[
+            \cL =
+            \sum_{t=1}^T \sum_{i=1}^m
+            \bbE_{q(\bX_t|\bX_0)}
+            \Big[-\log \pt(\bx_0^i |\bX_t)\Big].
+        \]
+	\end{block}
+\end{frame}
 %=======
 \subsection{Absorbing Diffusion}
 %=======
@@ -266,13 +331,13 @@
     \begin{block}{Independent masking across positions}
         Because the forward chain factorizes over positions,
         \[
-            q(\bx_t \mid \bx_0) = \prod_{\ell=1}^L q(x_t^\ell \mid x_0^\ell),
+            q(\bx_t |\bx_0) = \prod_{\ell=1}^L q(x_t^\ell |x_0^\ell),
         \]
         and for each position $\ell$:
         \[
-            q(x_t^\ell = x_0^\ell \mid \bx_0) = \bar\alpha_t,
+            q(x_t^\ell = x_0^\ell |\bx_0) = \bar\alpha_t,
             \qquad
-            q(x_t^\ell = m \mid \bx_0) = 1 - \bar\alpha_t.
+            q(x_t^\ell = m |\bx_0) = 1 - \bar\alpha_t.
         \]
     \end{block}
 
@@ -288,15 +353,15 @@
 
     Recall the general discrete posterior
     \[
-        q(x_{t-1} \mid x_t, x_0)
-        = \frac{q(x_t \mid x_{t-1})\, q(x_{t-1} \mid x_0)}
-               {q(x_t \mid x_0)}.
+        q(x_{t-1} |x_t, x_0)
+        = \frac{q(x_t |x_{t-1})\, q(x_{t-1} |x_0)}
+               {q(x_t |x_0)}.
     \]
     For the absorbing process we can obtain a closed-form expression.
     \begin{block}{Case 1: $x_t = x_0$ (token not yet masked)}
         Because the mask is absorbing, we cannot go from mask back to a clean token:
         \[
-            q(x_{t-1} = x_0 \mid x_t = x_0, x_0) = 1.
+            q(x_{t-1} = x_0 |x_t = x_0, x_0) = 1.
         \]
         If we observe $x_t = x_0$, we know the token has \textbf{never been masked} up to time $t$.
     \end{block}
@@ -311,11 +376,11 @@
         \end{itemize}
         Using the forward marginals,
         \[
-            q(x_{t-1} = x_0 \mid x_t = m, x_0)
+            q(x_{t-1} = x_0 |x_t = m, x_0)
             = \frac{\bar\alpha_{t-1}\,\beta_t}{1-\bar\alpha_t},
         \]
         \[
-            q(x_{t-1} = m \mid x_t = m, x_0)
+            q(x_{t-1} = m |x_t = m, x_0)
             = \frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t},
         \]
         and all other states have probability $0$.
@@ -326,7 +391,7 @@
     \begin{block}{Unmask vs stay masked}
         When $x_t = m$,
         \[
-            q(x_{t-1} \mid x_t = m, x_0)
+            q(x_{t-1} |x_t = m, x_0)
             = \underbrace{\frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}}_{\text{already masked}}
                 \delta_{x_{t-1}=m}
             + \underbrace{\frac{\bar\alpha_{t-1}\beta_t}{1-\bar\alpha_t}}_{\text{just masked}}
@@ -340,7 +405,7 @@
             \item \textbf{stay masked}: keep $x_{t-1} = m$,
             \item \textbf{unmask}: revert to the original symbol $x_0$.
         \end{itemize}
-        \item The reverse model $\pt(x_{t-1} \mid x_t)$ learns, at masked positions,
+        \item The reverse model $\pt(x_{t-1} |x_t)$ learns, at masked positions,
         how likely it is to \emph{unmask} vs \emph{stay masked}.
         \item This is exactly the semantic of \textbf{iterative infilling}:
         tokens start from mask and are gradually turned into meaningful symbols.
@@ -353,9 +418,9 @@
     Recall the per-timestep ELBO term
     \[
         \cL_t
-        = \bbE_{q(\bx_t \mid \bx_0)}
-        \KL\bigl(q(\bx_{t-1} \mid \bx_t, \bx_0)
-        \,\|\, \pt(\bx_{t-1} \mid \bx_t)\bigr).
+        = \bbE_{q(\bx_t |\bx_0)}
+        \KL\bigl(q(\bx_{t-1} |\bx_t, \bx_0)
+        \,\|\, \pt(\bx_{t-1} |\bx_t)\bigr).
     \]
 
     \begin{block}{Categorical KL $\Rightarrow$ cross-entropy}
@@ -368,14 +433,14 @@
 
         Therefore minimizing $\cL_t$ is equivalent (w.r.t.~$\btheta$) to
         \[
-            \bbE_{q(\bx_t \mid \bx_0)}
-            \Ent\Bigl(q(\bx_{t-1} \mid \bx_t, \bx_0),
-                     \pt(\bx_{t-1} \mid \bx_t)\Bigr).
+            \bbE_{q(\bx_t |\bx_0)}
+            \Ent\Bigl(q(\bx_{t-1} |\bx_t, \bx_0),
+                     \pt(\bx_{t-1} |\bx_t)\Bigr).
         \]
     \end{block}
 
     \begin{itemize}
-        \item For absorbing diffusion, $q(x_{t-1}^\ell \mid x_t^\ell, x_0^\ell)$
+        \item For absorbing diffusion, $q(x_{t-1}^\ell |x_t^\ell, x_0^\ell)$
               is supported only on $\{x_0^\ell, m\}$.
         \item This makes the target distribution extremely simple, and opens the door
               to a much simpler training loss.
@@ -390,7 +455,7 @@
         For absorbing diffusion:
         \begin{itemize}
             \item If $x_t^\ell \neq m$, then $x_t^\ell = x_0^\ell$ and the posterior
-                  $q(x_{t-1}^\ell \mid x_t^\ell, x_0^\ell)$ is a delta at $x_0^\ell$.
+                  $q(x_{t-1}^\ell |x_t^\ell, x_0^\ell)$ is a delta at $x_0^\ell$.
             \item If $x_t^\ell = m$, the posterior is a binary distribution over $\{m, x_0^\ell\}$.
         \end{itemize}
         The informative supervision is concentrated at \textbf{masked positions}.
@@ -401,15 +466,15 @@
     \begin{block}{Practical training objective}
         In practice we parameterize the model to predict $x_0$ from $(\bx_t, t)$:
         \[
-            \pt(x_0^\ell \mid \bx_t, t) = \Cat\bigl(\bpi_\theta(\bx_t, t)^\ell\bigr),
+            \pt(x_0^\ell |\bx_t, t) = \Cat\bigl(\bpi_\theta(\bx_t, t)^\ell\bigr),
         \]
         and minimize a time-conditioned cross-entropy:
         \[
             \cL_{\text{mask}}(\theta)
-            = \bbE_{t,\,\bx_0,\,\bx_t \sim q(\bx_t \mid \bx_0)}
+            = \bbE_{t,\,\bx_0,\,\bx_t \sim q(\bx_t |\bx_0)}
               \sum_{\ell=1}^L w_t \,
               \mathbb{I}\{x_t^\ell = m\}
-              \bigl[-\log \pt(x_0^\ell \mid \bx_t, t)\bigr].
+              \bigl[-\log \pt(x_0^\ell |\bx_t, t)\bigr].
         \]
         \begin{itemize}
             \item $w_t$ – optional weighting over timesteps (e.g., uniform over $t$).
@@ -428,7 +493,7 @@
         \item Training: time-conditioned masked language modeling objective
               on masked positions:
               \[
-                  (\bx_0, t) \;\mapsto\; \bx_t \sim q(\bx_t \mid \bx_0),
+                  (\bx_0, t) \;\mapsto\; \bx_t \sim q(\bx_t |\bx_0),
                   \quad
                   \text{predict } x_0^\ell \text{ wherever } x_t^\ell = m.
               \]
